@@ -1,0 +1,129 @@
+spring:
+  profiles:
+    active: dev
+---
+server:
+  port: 8001
+spring:
+  application:
+    name: PLAT-PROVIDER
+  profiles: dev
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+---
+server:
+  port: 8101
+spring:
+  application:
+    name: PLAT-PROVIDER-TEST
+  profiles: test
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+---
+---
+server:
+  port: 8002
+spring:
+  application:
+    name: MANDUN-PROVIDER
+  datasource:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/hghylot
+      username: root
+      password: MyNewPass4!
+  profiles: mandundev
+feign:
+   hystrix:
+       enabled: true #开启熔断支持
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+mybatis-plus:
+  mapper-locations: classpath:cn/hgai/hghy/mapper/*Mapper.xml
+  type-aliases-package: cn.hgai.hghy.domain,cn.hgai.hghy.query
+---
+---
+server:
+  port: 8102
+spring:
+  application:
+    name: PRODUCT-PROVIDER-TEST
+  datasource:
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/aigou
+      username: root
+      password: MyNewPass4!
+  profiles: manduntest
+feign:
+   hystrix:
+       enabled: true #开启熔断支持
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+mybatis-plus:
+  mapper-locations: classpath:cn/hgai/hghy/mapper/*Mapper.xml
+  type-aliases-package: cn.hgai.hghy.domain,cn.hgai.hghy.query
+---
+---
+server:
+  port: 8003
+  max-http-header-size: 404857600 #Request header is too large异常解决
+spring:
+  application:
+    name: COMMON-PROVIDER
+  data:
+    elasticsearch:
+      cluster-name: elasticsearch  # 这里的名字必须是这样
+      cluster-nodes: 127.0.0.1:9300  # ElasticSearch 所在的位置
+  profiles: comondev
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+---
+server:
+  port: 8103
+  max-http-header-size: 404857600 #Request header is too large异常解决
+spring:
+  application:
+    name: COMMON-PROVIDER
+  data:
+      elasticsearch:
+        cluster-name: elasticsearch  # 这里的名字必须是这样
+        cluster-nodes: 127.0.0.1:9300  # ElasticSearch 所在的位置
+  profiles: commontest
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+---
+server:
+  port: 9527
+spring:
+  application:
+    name: MICROSERVICE-ZUUL-GATEWAY
+  profiles: zuul
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka
+  instance:
+    instance-id: gateway-9527 #在注册中心显示的名称
+    prefer-ip-address: true #是否在注册中心显示IP地址
+zuul:
+  routes:
+    wdUser.serviceId: plat-provider
+    wdUser.path: /plat/**  #映射路径，找这个路径的就直接映射到serviceId
+    product.serviceId: mandun-provider
+    product.path: /mandun/**  #映射路径，找这个路径的就直接映射到serviceId
+    common.serviceId: common-provider
+    common.path: /common/**  #映射路径，找这个路径的就直接映射到serviceId
+  prefix: "/hghy"
+  ignored-services: "*"
+---
