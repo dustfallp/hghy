@@ -6,7 +6,7 @@ server:
   port: 8001
 spring:
   application:
-    name: PLAT-PROVIDER
+    name: SYSTEM-PROVIDER
   profiles: dev
 eureka:
   client:
@@ -17,7 +17,7 @@ server:
   port: 8101
 spring:
   application:
-    name: PLAT-PROVIDER-TEST
+    name: SYSTEM-PROVIDER-TEST
   profiles: test
 eureka:
   client:
